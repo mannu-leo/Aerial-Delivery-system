@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Safety & Compliance</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: #f9fafb;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: #fff;
+      padding: 16px 20px;
+      border-bottom: 1px solid #e5e7eb;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    #map { flex: 1; width: 100%; }
+    .controls {
+      position: absolute; top: 90px; right: 20px;
+      display: flex; flex-direction: column; gap: 10px;
+      z-index: 1000;
+    }
+    button, input {
+      background: #2563eb; color: white;
+      border: none; padding: 10px 14px;
+      border-radius: 8px; font-size: 14px; font-weight: 600;
+      cursor: pointer;
+    }
+    input {
+      background: #fff; color: #111; font-weight: normal;
+      border: 1px solid #ccc;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none; position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%; background: rgba(0,0,0,0.5);
+      justify-content: center; align-items: center;
+      z-index: 2000;
+    }
+    .modal-content {
+      background: #fff; padding: 20px; border-radius: 12px;
+      max-width: 400px; width: 90%;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      animation: fadeIn 0.3s ease;
+    }
+    .modal-content h3 {
+      margin-top: 0;
+      font-size: 18px;
+      color: #111;
+    }
+    .modal-content ul {
+      margin: 10px 0; padding-left: 20px;
+    }
+    .modal-content button {
+      background: #2563eb; color: #fff;
+      margin-top: 10px;
+      width: 100%;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>Safety & Compliance</h2>
+    <p>Review certifications and check no-fly zones across India.</p>
+  </header>
+
+  <div id="map"></div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button id="locateBtn">📍 Use My Location</button>
+    <input id="deliveryInput" type="text" placeholder="Enter delivery location"/>
+    <button id="checkDeliveryBtn">🚚 Check Delivery Location</button>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="resultModal">
+    <div class="modal-content">
+      <h3 id="modalTitle">Result</h3>
+      <div id="modalBody"></div>
+      <button onclick="closeModal()">OK</button>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const map = L.map("map").setView([20.5937, 78.9629], 5);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap contributors"
+    }).addTo(map);
+
+    let noFlyZones = [];
+
+    // Fetch zones from backend
+    fetch("http://localhost:5000/api/noflyzones")
+      .then(res => res.json())
+      .then(zones => {
+        noFlyZones = zones;
+        zones.forEach(zone => {
+          L.circle([zone.lat, zone.lng], {
+            radius: zone.radius,
+            color: "red", fillColor: "#ef4444", fillOpacity: 0.4,
+          }).addTo(map).bindPopup(`<b>No-Fly Zone:</b> ${zone.name}`);
+        });
+      });
+
+    // Haversine distance
+    function getDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371e3;
+      const toRad = x => (x * Math.PI) / 180;
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a = Math.sin(dLat/2)**2 +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                Math.sin(dLon/2)**2;
+      return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+    }
+
+    // Check zones logic
+    function checkZones(lat, lng, label) {
+      let nearby = [];
+      noFlyZones.forEach(zone => {
+        const dist = getDistance(lat, lng, zone.lat, zone.lng);
+        if (dist <= zone.radius) {
+          nearby.push(`${zone.name} (🚫 INSIDE no-fly zone)`);
+        } else if (dist <= zone.radius + 2000) {
+          nearby.push(`${zone.name} (⚠️ NEAR no-fly zone)`);
+        }
+      });
+
+      map.setView([lat, lng], 12);
+      L.marker([lat, lng]).addTo(map).bindPopup(label).openPopup();
+
+      if (nearby.length > 0) {
+        showModal("⚠️ Warning!", `<ul>${nearby.map(x=>`<li>${x}</li>`).join("")}</ul>`);
+      } else {
+        showModal("✅ Safe Zone", "<p>No no-fly zones nearby.</p>");
+      }
+    }
+
+    // Use my location
+    document.getElementById("locateBtn").addEventListener("click", () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((pos) => {
+          checkZones(pos.coords.latitude, pos.coords.longitude, "📍 You are here");
+        });
+      }
+    });
+
+    // Check delivery location
+    document.getElementById("checkDeliveryBtn").addEventListener("click", () => {
+      const query = document.getElementById("deliveryInput").value;
+      if (!query) return alert("Please enter a delivery location");
+
+      // Simple geocoding with Nominatim API (OpenStreetMap)
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.length > 0) {
+            const lat = parseFloat(data[0].lat);
+            const lng = parseFloat(data[0].lon);
+            checkZones(lat, lng, `🚚 Delivery: ${query}`);
+          } else {
+            alert("Location not found!");
+          }
+        });
+    });
+
+    // Modal functions
+    function showModal(title, body) {
+      document.getElementById("modalTitle").innerText = title;
+      document.getElementById("modalBody").innerHTML = body;
+      document.getElementById("resultModal").style.display = "flex";
+    }
+    function closeModal() {
+      document.getElementById("resultModal").style.display = "none";
+    }
+  </script>
+</body>
+</html>

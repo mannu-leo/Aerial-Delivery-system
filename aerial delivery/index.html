@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyFleet - Aerial Intelligence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .cta-buttons {
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: white;
+            color: #1a2980;
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        section {
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 40px;
+            color: #1a2980;
+            text-align: center;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            margin: 20px 0 10px;
+            color: #26d0ce;
+        }
+        
+        .how-it-works {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .feature-box {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        
+        .why-choose {
+            background-color: #f0f8ff;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .testimonials {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .testimonial {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .testimonial-name {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        
+        .testimonial-title {
+            color: #666;
+            font-style: italic;
+        }
+        
+        .ready-section {
+            text-align: center;
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            color: white;
+        }
+        
+        .ready-section h2 {
+            color: white;
+        }
+        
+        footer {
+            background-color: #222;
+            color: white;
+            padding: 60px 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-column h4 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column a:hover {
+            color: white;
+        }
+        
+        .app-links {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .app-link {
+            display: inline-block;
+            padding: 8px 12px;
+            background-color: #333;
+            border-radius: 5px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Aerial Intelligence, Delivered Fast</h1>
+            <p>Deploy autonomous drones for mapping, inspection, and delivery with real-time tracking and unmatched reliability.</p>
+            <div class="cta-buttons">
+                <a href="main.html" class="btn btn-primary">Get Started</a>
+                <a href="#" class="btn btn-secondary">Download Brochure</a>
+            </div>
+        </div>
+    </header>
+    
+    <section>
+        <h2>How it works</h2>
+        <p style="text-align: center;">From setup to sky in minutes.</p>
+        
+        <div class="how-it-works">
+            <div class="feature-box">
+                <h3>1. Configure</h3>
+                <p>Choose mission type, altitude, and path with guided presets.</p>
+            </div>
+            <div class="feature-box">
+                <h3>2. Deploy</h3>
+                <p>Auto-launch from base with obstacle-aware routing.</p>
+            </div>
+            <div class="feature-box">
+                <h3>3. Track</h3>
+                <p>Live telemetry, HD video, and geofenced safety zones.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="why-choose">
+        <h2>Why choose SkyFleet</h2>
+        <p style="text-align: center;">Performance that keeps you ahead.</p>
+        
+        <div class="features">
+            <div class="feature-box">
+                <h3>Speed</h3>
+                <p>Up to 120 km/h with precision tracking for rapid response missions.</p>
+            </div>
+            <div class="feature-box">
+                <h3>Tracking</h3>
+                <p>Multi-sensor tracking with AI-assisted subject lock even in low light.</p>
+            </div>
+            <div class="feature-box">
+                <h3>Reliability</h3>
+                <p>Redundant control links and return-to-home for air-weather stability.</p>
+            </div>
+        </div>
+    </section>
+    
+
+    
+    
+    <section class="ready-section">
+        <h2>Ready to take flight?</h2>
+        <p style="margin-bottom: 30px;">Start your first mission today.</p>
+        
+
+        <a href="http://127.0.0.1:5500/main.html" class="btn btn-primary">Start</a>
+    </section>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h4>SkyFleet</h4>
+                <ul>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="mailto:hello@skyfleet.ai">hello@skyfleet.ai</a></li>
+                    <li><a href="tel:+15550199210">+1 (555) 0199-210</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Docs</a></li>
+                    <li><a href="#">Security</a></li>
+                    <li><a href="#">Status</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Get the app</h4>
+                <div class="app-links">
+                    <a href="#" class="app-link">App Store</a>
+                    <a href="#" class="app-link">Google Play</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

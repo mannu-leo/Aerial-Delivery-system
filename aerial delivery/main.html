@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SkyDrone Delivery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #e6f3ff;
+      color: #0a2540;
+    }
+
+    nav {
+      background-color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 100;
+    }
+
+    nav .logo {
+      font-weight: bold;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #0a2540;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    nav ul li a:hover {
+      color: #0a84ff;
+    }
+
+    nav ul li a:after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background-color: #0a84ff;
+      transition: width 0.3s ease;
+    }
+
+    nav ul li a:hover:after {
+      width: 100%;
+    }
+
+    nav .signin {
+      background: #0a84ff;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    nav .signin:hover {
+      background: #0066cc;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(10, 132, 255, 0.2);
+    }
+
+    .main-map {
+      margin: 2rem;
+      border-radius: 12px;
+      overflow: hidden;
+      height: 200px;
+      background: #ccc;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .main-map:hover {
+      transform: translateY(-5px);
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem;
+    }
+
+    .card {
+      display: block; /* makes link clickable for whole card */
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none; /* remove underline */
+      color: inherit; /* keep text color */
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+    }
+
+    .card:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, #0a84ff, #00c6ff);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+
+    .card:hover:before {
+      transform: scaleX(1);
+    }
+
+    .card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.2rem;
+      color: #0a2540;
+    }
+
+    .card p {
+      margin: 0;
+      color: #6b7c93;
+      font-size: 0.9rem;
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover .card-icon {
+      transform: scale(1.1);
+    }
+
+    .live-map {
+      margin: 2rem;
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+    }
+
+    .live-map:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .live-map h3 {
+      margin-top: 0;
+    }
+
+    .live-map iframe {
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .live-map button {
+      background: #0a84ff;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .live-map button:hover {
+      background: #0066cc;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(10, 132, 255, 0.3);
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 2rem;
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+    }
+
+    .stats:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .stat {
+      text-align: center;
+      padding: 0 1rem;
+    }
+
+    .stat h2 {
+      margin: 0;
+      font-size: 2rem;
+      background: linear-gradient(135deg, #0a84ff, #00c6ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat p {
+      margin: 0.5rem 0 0;
+      color: #6b7c93;
+      font-size: 0.9rem;
+    }
+
+    footer {
+      background: white;
+      padding: 2rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+    }
+
+    footer div {
+      margin: 0.5rem 0;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .floating {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .delay-1 { animation-delay: 0.5s; }
+    .delay-2 { animation-delay: 1s; }
+    .delay-3 { animation-delay: 1.5s; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">🚁 SkyDrone</div>
+    <ul>
+      <li><a href="index.html" class="btn btn-primary">Home</a></li>
+      <li><a href="order.html">Orders</a></li>
+      <li><a href="track.html">Track</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Support</a></li>
+    </ul>
+    <a class="signin" href="#">Sign In</a>
+  </nav>
+
+  <div class="main-map">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d224345.50791321054!2d77.06889957496067!3d28.527582006534892!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce2f30fbd1d35%3A0x50b6c7f637f4f6ed!2sNew%20Delhi%2C%20Delhi!5e0!3m2!1sen!2sin!4v1692153493874!5m2!1sen!2sin"
+      width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
+    </iframe>
+  </div>
+
+  <div class="quick-actions">
+    <a href="instantorder.html" class="card floating">
+      <div class="card-icon">📦</div>
+      <h3>New Delivery</h3>
+      <p>Create an instant order with pickup and drop-off.</p>
+    </a>
+
+    <a href="track.html" class="card floating delay-1">
+      <div class="card-icon">🔍</div>
+      <h3>Track by Code</h3>
+      <p>Enter tracking ID to see live position.</p>
+    </a>
+
+    <a href="order.html" class="card floating delay-2">
+      <div class="card-icon">🧾</div>
+      <h3>Your Order</h3>
+      <p>See all active drones across your city.</p>
+    </a>
+
+    <a href="map.html" class="card floating delay-3">
+      <div class="card-icon">🛡️</div>
+      <h3>Safety & Compliance</h3>
+      <p>Review certifications and no-fly rules.</p>
+    </a>
+  </div>
+
+  <div class="live-map">
+    <h3>Live Map Preview</h3>
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d224345.50791321054!2d77.06889957496067!3d28.527582006534892!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce2f30fbd1d35%3A0x50b6c7f637f4f6ed!2sNew%20Delhi%2C%20Delhi!5e0!3m2!1sen!2sin!4v1692153493874!5m2!1sen!2sin"
+      width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy">
+    </iframe>
+    <br><br>
+    <button onclick="window.open('https://www.google.com/maps','_blank')">Open Full Map</button>
+  </div>
+
+ 
+
+  <footer>
+    <div>© SkyDrone - Speed. Safety. Precision.</div>
+    <div>About | FAQ | Careers</div>
+    <div>Privacy | Terms | Compliance</div>
+    <div>Contact: hello@skydrone.io</div>
+  </footer>
+
+</body>

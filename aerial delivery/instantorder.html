@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instant Order | SkyFleet</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bg-element {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            z-index: -1;
+        }
+        
+        .bg-element:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            left: -150px;
+            animation: float 15s infinite linear;
+        }
+        
+        .bg-element:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            right: 20%;
+            animation: float 12s infinite linear reverse;
+        }
+        
+        .bg-element:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            top: 30%;
+            right: -75px;
+            animation: float 10s infinite linear;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #66a6ff, #89f7fe);
+            z-index: 10;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #66a6ff, #333);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+        
+        .header p {
+            color: #555;
+            font-size: 1.1rem;
+        }
+        
+        .step-container {
+            margin-bottom: 25px;
+            position: relative;
+            padding-left: 40px;
+        }
+        
+        .step-checkbox {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .step-label {
+            display: block;
+            position: relative;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .step-label::before {
+            content: '';
+            position: absolute;
+            left: -40px;
+            top: 0;
+            width: 26px;
+            height: 26px;
+            border: 2px solid #66a6ff;
+            border-radius: 50%;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .step-checkbox:checked + .step-label::before {
+            background: #66a6ff;
+            border-color: #66a6ff;
+        }
+        
+        .step-checkbox:checked + .step-label::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            left: -35px;
+            top: 3px;
+            color: #fff;
+            font-size: 14px;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 16px;
+            color: #66a6ff;
+            font-size: 18px;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 15px 15px 15px 50px;
+            border: 2px solid rgba(102, 166, 255, 0.3);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.8);
+            color: #333;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #66a6ff;
+            box-shadow: 0 0 0 3px rgba(102, 166, 255, 0.2);
+        }
+        
+        input::placeholder, textarea::placeholder {
+            color: #999;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .autocomplete-note {
+            display: block;
+            color: #66a6ff;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            margin-left: 10px;
+            font-style: italic;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-order {
+            background: linear-gradient(90deg, #66a6ff, #89f7fe);
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 166, 255, 0.3);
+        }
+        
+        .btn-cancel {
+            background: rgba(0, 0, 0, 0.05);
+            color: #333;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-order:hover {
+            box-shadow: 0 8px 20px rgba(102, 166, 255, 0.5);
+        }
+        
+        .drone-icon {
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            font-size: 120px;
+            color: rgba(102, 166, 255, 0.15);
+            transform: rotate(-20deg);
+            z-index: -1;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+            100% { transform: translateY(0) rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(102, 166, 255, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(102, 166, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(102, 166, 255, 0); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .btn {
+                padding: 14px 16px;
+                font-size: 1rem;
+            }
+            
+            .drone-icon {
+                font-size: 80px;
+                top: -30px;
+                right: -30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-element"></div>
+    <div class="bg-element"></div>
+    <div class="bg-element"></div>
+    
+    <div class="container">
+        <i class="fas fa-drone drone-icon"></i>
+        
+        <div class="header">
+            <h1>Create Instant Order</h1>
+            <p>Fast, reliable drone delivery service</p>
+        </div>
+        
+        <form id="order-form">
+            <div class="step-container">
+                <input type="checkbox" id="instant" class="step-checkbox">
+                <label for="instant" class="step-label">Instant Delivery</label>
+            </div>
+            
+            <div class="step-container">
+                <input type="checkbox" id="pickup" class="step-checkbox" checked>
+                <label for="pickup" class="step-label">Pickup Location</label>
+                <div class="input-group">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <input type="text" placeholder="Start typing an address..." required>
+                </div>
+                <span class="autocomplete-note">Autocomplete enabled</span>
+            </div>
+            
+            <div class="step-container">
+                <input type="checkbox" id="dropoff" class="step-checkbox" checked>
+                <label for="dropoff" class="step-label">Drop-off Location</label>
+                <div class="input-group">
+                    <i class="fas fa-flag-checkered"></i>
+                    <input type="text" placeholder="Enter destination address..." required>
+                </div>
+                <span class="autocomplete-note">We'll suggest the best route</span>
+            </div>
+            
+            <div class="step-container">
+                <input type="checkbox" id="notes" class="step-checkbox" checked>
+                <label for="notes" class="step-label">Notes (optional)</label>
+                <div class="input-group">
+                    <i class="fas fa-sticky-note"></i>
+                    <textarea placeholder="Add any instructions for pickup or delivery..."></textarea>
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <button type="submit" class="btn btn-order pulse">
+                    <i class="fas fa-paper-plane"></i> Order Now
+                </button>
+                <button type="button" class="btn btn-cancel">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('order-form');
+            const cancelBtn = document.querySelector('.btn-cancel');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const pickup = form.querySelector('input[placeholder="Start typing an address..."]').value;
+                const dropoff = form.querySelector('input[placeholder="Enter destination address..."]').value;
+                
+                if (!pickup || !dropoff) {
+                    alert('Please enter both pickup and drop-off locations');
+                    return;
+                }
+                
+                const submitBtn = form.querySelector('.btn-order');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                submitBtn.disabled = true;
+                
+                setTimeout(() => {
+                    alert(`Order placed successfully!\n\nPickup: ${pickup}\nDrop-off: ${dropoff}`);
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Order Now';
+                    submitBtn.disabled = false;
+                    form.reset();
+                }, 1500);
+            });
+            
+            cancelBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to cancel this order?')) {
+                    form.reset();
+                }
+            });
+            
+            const inputs = document.querySelectorAll('input[type="text"]');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+                });
+                
+                input.addEventListener('input', function() {
+                    if (this.value.length > 2) {
+                        this.style.borderColor = '#66a6ff';
+                    } else {
+                        this.style.borderColor = 'rgba(102, 166, 255, 0.3)';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

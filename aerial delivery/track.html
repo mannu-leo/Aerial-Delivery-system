@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drone Simulation</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<style>
+  body, html { height: 100%; margin: 0; }
+  #map { height: 100%; width: 100%; }
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+  const map = L.map('map').setView([29.27, 79.5], 11);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  const haldwani = [29.2167, 79.5200];
+  const bhimtal = [29.3794, 79.4772];
+
+  L.marker(haldwani).addTo(map).bindPopup("Haldwani");
+  L.marker(bhimtal).addTo(map).bindPopup("Bhimtal");
+
+  const noFlyBounds = [[29.27, 79.42], [29.32, 79.48]];
+  L.rectangle(noFlyBounds, {color: "red", weight: 2, fillOpacity: 0.3}).addTo(map);
+
+  const path = [
+    haldwani,
+    [29.23, 79.50],
+    [29.28, 79.50],
+    [29.33, 79.49],
+    [29.37, 79.48],
+    bhimtal
+  ];
+
+  const drone = L.circleMarker(path[0], {radius: 10, color: "blue"}).addTo(map);
+
+  let t = 0; // position along path
+  let forward = true;
+  const totalTime = 10000; // 10 seconds to reach
+  const totalSteps = path.length - 1;
+  const stepTime = totalTime / totalSteps;
+
+  function interpolate(p1, p2, fraction) {
+    return [
+      p1[0] + (p2[0] - p1[0]) * fraction,
+      p1[1] + (p2[1] - p1[1]) * fraction
+    ];
+  }
+
+  let startTime = null;
+  let segment = 0;
+
+  function animate(time) {
+    if (!startTime) startTime = time;
+    const elapsed = time - startTime;
+
+    const fraction = Math.min(elapsed / stepTime, 1);
+    drone.setLatLng(interpolate(path[segment], path[segment + 1], fraction));
+
+    if (fraction >= 1) {
+      segment++;
+      startTime = time;
+      if (segment >= path.length - 1) {
+        // reverse path
+        path.reverse();
+        segment = 0;
+      }
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  requestAnimationFrame(animate);
+</script>
+
+</body>
+</html>
